@@ -1,47 +1,44 @@
-# Use Google Cloud Build's Node.js image for building
-FROM gcr.io/google.com/cloudsdktool/google-cloud-cli:alpine as builder
+# Vritta website + astrologer portal for Cloud Run.
+#
+#   gcloud run deploy front-end --source . --region asia-south1 --allow-unauthenticated
+#
+# Build and run use the same Node image, so native packages (sharp for
+# next/image) match at runtime.
 
-# Install Node.js and npm
-RUN apk add --no-cache nodejs npm
-
-# Set working directory
+# ---------- Build ----------
+FROM node:22-slim AS builder
 WORKDIR /app
 
-# Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install -f
+RUN npm ci
 
-# Copy the rest of the code
 COPY . .
 
-# Optional build-time public env values for client bundle
-ARG NEXT_PUBLIC_MAIN_BACKEND_URL
-ARG NEXT_PUBLIC_MAIN_AI_BACKEND_URL
-ARG NEXT_PUBLIC_AUDIO_AI_BACKEND_URL
-ENV NEXT_PUBLIC_MAIN_BACKEND_URL=$NEXT_PUBLIC_MAIN_BACKEND_URL
-ENV NEXT_PUBLIC_MAIN_AI_BACKEND_URL=$NEXT_PUBLIC_MAIN_AI_BACKEND_URL
-ENV NEXT_PUBLIC_AUDIO_AI_BACKEND_URL=$NEXT_PUBLIC_AUDIO_AI_BACKEND_URL
+# NEXT_PUBLIC_* values are built into the browser JavaScript, so they must
+# be set here (not as Cloud Run runtime variables). Override with
+#   --build-arg NEXT_PUBLIC_API_URL=...
+ARG NEXT_PUBLIC_API_URL=https://feature-backend-570395865015.asia-south1.run.app
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build the app
 RUN npm run build
 
-# Production stage - use distroless for smaller, more secure image
-FROM gcr.io/distroless/nodejs20-debian12
-
-# Set working directory
+# ---------- Run ----------
+FROM node:22-slim
 WORKDIR /app
 
-# Copy built application from builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/public ./public
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+# Cloud Run sends traffic to $PORT; listen on all interfaces.
+ENV PORT=8080
+ENV HOSTNAME=0.0.0.0
 
-# Cloud Run expects app to listen on $PORT
-ENV PORT 8080
+# Standalone output: server.js + only the node_modules it needs.
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+COPY --from=builder --chown=node:node /app/public ./public
 
-# Expose port
+USER node
 EXPOSE 8080
 
-# Start in production mode
-CMD ["./node_modules/.bin/next", "start"]
+CMD ["node", "server.js"]
