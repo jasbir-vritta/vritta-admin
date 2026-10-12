@@ -10,19 +10,6 @@ const strokeProps = {
   "aria-hidden": true,
 };
 
-export function LotusIcon({ className }: IconProps) {
-  return (
-    <svg {...strokeProps} viewBox="0 0 48 48" className={className}>
-      <path d="M24 6c4 5 6 10 6 15s-2 10-6 14c-4-4-6-9-6-14s2-10 6-15Z" />
-      <path d="M24 35C17 33 11 28 9 20c5 0 10 2 13 6" />
-      <path d="M24 35c7-2 13-7 15-15-5 0-10 2-13 6" />
-      <path d="M22 37c-6 0-12-3-16-9 4-2 9-1 12 1" />
-      <path d="M26 37c6 0 12-3 16-9-4-2-9-1-12 1" />
-      <path d="M24 35v6" />
-    </svg>
-  );
-}
-
 export function UsersIcon({ className }: IconProps) {
   return (
     <svg {...strokeProps} className={className}>

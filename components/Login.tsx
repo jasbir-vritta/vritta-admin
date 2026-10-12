@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 
-import { LotusIcon } from "./icons";
+import { BrandLogo } from "./BrandLogo";
 import { Button, Field, inputClass } from "./ui";
 import { api } from "@/lib/api";
 
@@ -35,9 +35,8 @@ export function Login({ onSignedIn }: Props) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
-        <div className="mb-6 flex items-center justify-center gap-2 text-primary">
-          <LotusIcon className="h-9 w-9 text-accent" />
-          <span className="font-serif text-[30px] leading-none tracking-tight">Vritta</span>
+        <div className="mb-6 flex items-center justify-center gap-2">
+          <BrandLogo className="h-10 w-auto" />
           <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white">
             Admin
           </span>

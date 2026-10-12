@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { useAdmin } from "./AdminProvider";
-import { HelpIcon, LogoutIcon, LotusIcon, UsersIcon } from "./icons";
+import { BrandLogo } from "./BrandLogo";
+import { HelpIcon, LogoutIcon, UsersIcon } from "./icons";
 
 const NAV = [
   { label: "Astrologers", href: "/", icon: UsersIcon },
@@ -20,9 +21,8 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <header className="sticky top-0 z-20 border-b border-primary/8 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
-          <Link href="/" className="flex items-center gap-2 text-primary">
-            <LotusIcon className="h-7 w-7 text-accent" />
-            <span className="font-serif text-2xl leading-none tracking-tight">Vritta</span>
+          <Link href="/" aria-label="Vritta Admin home" className="flex items-center gap-2">
+            <BrandLogo alt="" className="h-8 w-auto" />
             <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
               Admin
             </span>
