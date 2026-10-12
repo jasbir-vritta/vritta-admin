@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Same brand colours as the Vritta website and astrologer portal. */
+@theme {
+  --color-primary: #3b1f6e;
+  --color-primary-dark: #2c1552;
+  --color-accent: #e8742a;
+  --color-lavender: #f4effb;
+  --color-ink: #2a2438;
+  --font-sans: var(--font-geist-sans);
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --shadow-card: 0 10px 40px -20px rgb(59 31 110 / 0.25);
+}
+
+body {
+  background: #f6f3fa;
+  color: var(--color-ink);
+}
